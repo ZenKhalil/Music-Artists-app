@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="da">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musikkunstnere</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Artist Directory</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <header>
-        <h1>Musikkunstnere</h1>
-    </header>
-    <main>
-        <ul id="artists-list"></ul>
-    </main>
+    <nav>
+        <ul>
+            <li><a href="#" id="home-link">Home</a></li>
+            <li><a href="#" id="artists-link">Artists</a></li>
+            <li><a href="#" id="genre-link">Genre</a></li>
+            <li><a href="#" id="favorites-link">Favorites</a></li>
+            <li><a href="#" id="about-link">About</a></li>
+        </ul>
+        <div>
+            <input type="search" id="search-bar" placeholder="Search...">
+        </div>
+    </nav>
+    <div id="content">
+        <!-- Indholdet skiftes her afhængigt af navigation -->
+    </div>
+
+    <footer>
+        <p>Udviklet af Mohammed-Zen</p>
+    </footer>
+
     <script src="app.js"></script>
+
 </body>
+
 </html>
