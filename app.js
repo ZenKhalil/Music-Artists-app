@@ -71,7 +71,7 @@ function showArtists() {
         artistListHTML += `
         <li>
             <h2>${artist.name}</h2>
-            <img src="${artist.image}" alt="${artist.name}" width="100" />
+            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
             <p>${artist.shortDescription}</p>
             <a href="${artist.website}">Website</a>
             <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
@@ -110,7 +110,7 @@ function showArtistsByGenre(genre) {
         artistListHTML += `
         <li>
             <h2>${artist.name}</h2>
-            <img src="${artist.image}" alt="${artist.name}" width="100" />
+            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
             <p>${artist.shortDescription}</p>
             <a href="${artist.website}">Website</a>
             <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
