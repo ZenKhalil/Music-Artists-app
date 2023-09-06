@@ -14,7 +14,7 @@ function fetchArtists() {
             artists = data;
             // Check current URL to display the correct content
             const currentPath = window.location.pathname;
-            if (currentPath === '/artists' || currentPath === '/') {
+            if (currentPath === '/artists') {
                 showArtists();
             } else if (currentPath === '/genre') {
                 showGenre();
