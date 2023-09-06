@@ -2,6 +2,7 @@
 
 let artists = [];
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+let currentGenre = null; 
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchArtists();
@@ -104,6 +105,7 @@ function showGenre() {
 }
 
 function showArtistsByGenre(genre) {
+    currentGenre = genre; 
     const filteredArtists = artists.filter(artist => artist.genres.includes(genre));
     let artistListHTML = `<h1>${genre}</h1><ul>`;
     filteredArtists.forEach(artist => {
@@ -127,7 +129,7 @@ function showFavorites() {
         favoritesListHTML += `
         <li>
             <h2>${artist.name}</h2>
-            <img src="${artist.image}" alt="${artist.name}" width="100" />
+            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
             <p>${artist.shortDescription}</p>
             <a href="${artist.website}">Website</a>
             <button onclick="toggleFavorite(${artist.id})">Remove from Favorites</button>
@@ -146,8 +148,21 @@ function toggleFavorite(artistId) {
         favorites.push(artistId);
     }
     localStorage.setItem('favorites', JSON.stringify(favorites));
-    showArtists();  // Opdaterer kunstnerlisten efter ændringer i favoritter
+
+    // Check current URL to display the correct content
+    const currentPath = window.location.pathname;
+
+    if (currentPath === '/favorites') {
+        showFavorites();  // Update the favorites list immediately
+    } else if (currentPath === '/artists' || currentPath === '/') {
+        showArtists();
+    } else if (currentPath === '/genre' && currentGenre) {
+        showArtistsByGenre(currentGenre); 
+    } 
+    // ... add other paths as needed
 }
+
+
 
 function showAbout() {
     contentDiv.innerHTML = "<h1>About Us</h1><p>We are a platform dedicated to showcasing music artists.</p>";
