@@ -1,0 +1,221 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgba(131, 58, 180, 0.8);
+  background: linear-gradient(138deg, rgba(131, 58, 180, 0.8) 17%, rgba(253, 29, 137, 0.8) 65%, rgba(252, 176, 69, 0.8) 89%);
+  background-attachment: fixed;
+}
+
+.hide {
+  display: none;
+}
+
+header {
+  text-align: center;
+}
+
+dialog {
+  position: fixed;
+  margin: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: rgba(131, 58, 180, 0.8);
+  background: linear-gradient(138deg, rgba(131, 58, 180, 0.8) 17%, rgba(253, 29, 137, 0.8) 65%, rgba(252, 176, 69, 0.8) 89%);
+  backdrop-filter: blur(2px);
+  color: rgb(0, 0, 0);
+  font-size: large;
+  -webkit-box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+
+dialog h2 {
+  text-align: center;
+  color: black;
+}
+
+dialog::backdrop {
+  backdrop-filter: brightness(40%) blur(5px);
+  overflow: hidden;
+}
+
+label {
+  color: rgb(0, 0, 0);
+  font-size: large;
+  margin: 15px 0;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.grid-box {
+  margin: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: rgb(42, 42, 42);
+  color: whitesmoke;
+  -webkit-box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 17px -2px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+  height: 440px;
+}
+
+.grid-box img {
+  height: 200px;
+}
+
+button {
+  background-color: rgb(252, 176, 69);
+  border-radius: 8px;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+select {
+  background-color: rgb(42, 42, 42);
+  color: whitesmoke;
+  border-radius: 8px;
+  border: none;
+  padding: 5px 10px;
+}
+
+input {
+  background-color: rgb(42, 42, 42);
+  color: whitesmoke;
+  border-radius: 8px;
+  border: none;
+  padding: 5px 20px;
+  margin: 15px 0;
+}
+
+#top-btns {
+  margin-left: 20px;
+}
+
+#navbar {
+  text-align: center;
+}
+#navbar a {
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0 30px;
+  color: black;
+  font-size: large;
+}
+#navbar a:hover {
+  font-weight: 400;
+  color: rgb(255, 255, 255);
+}
+
+.card-content-first {
+  display: block;
+}
+.card-content-second {
+  visibility: hidden;
+}
+
+.press-this {
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.scroll-up-hide {
+  animation: scrollUpHide;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.scroll-up-show {
+  animation: scrollUpShow;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.scroll-down-show {
+  animation: scrollDownShow;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.scroll-down-hide {
+  animation: scrollDownHide;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes scrollUpHide {
+  0% {
+    visibility: visible;
+  }
+
+  99% {
+    visibility: visible;
+  }
+  100% {
+    transform: translate(0, -400px);
+    visibility: hidden;
+  }
+}
+
+@keyframes scrollUpShow {
+  0% {
+    visibility: hidden;
+    transform: translate(0, 100px);
+  }
+
+  1% {
+    display: block;
+    visibility: visible;
+  }
+  100% {
+    transform: translate(0, -350px);
+    visibility: visible;
+  }
+}
+
+@keyframes scrollDownShow {
+  0% {
+    transform: translate(0, -400px);
+    visibility: hidden;
+  }
+  1% {
+    visibility: visible;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+
+@keyframes scrollDownHide {
+  0% {
+    transform: translate(0, -350px);
+    visibility: visible;
+  }
+
+  99% {
+    visibility: visible;
+  }
+  100% {
+    transform: translate(0, 100px);
+    visibility: hidden;
+  }
+}

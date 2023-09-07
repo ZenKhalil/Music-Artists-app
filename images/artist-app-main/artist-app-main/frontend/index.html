@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artist-App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>ARTIST-APP</h1>
+    </header>
+    <main>
+      <div id="top-btns">
+        <button id="btn-create">CREATE ARTIST</button>
+        <select name="sort-select" id="sort-select">
+          <option value="name">Name (A-Z)</option>
+          <option value="active">Debut Year</option>
+        </select>
+        <input type="search" id="input-search" name="search" placeholder="Search by Name..." class="search-input" />
+        <a href="#" class="search-btn">
+          <i class="fas fa-search"></i>
+        </a>
+      </div>
+      <nav id="navbar">
+        <a id="home-link" href="#" rel="noopener noreferrer">HOME</a>
+        <a id="favorite-link" href="#" rel="noopener noreferrer">FAVORITES</a>
+      </nav>
+
+      <dialog id="create-dialog">
+        <h2>CREATE NEW ARTIST</h2>
+        <form action="" id="create-form">
+          <label for="newName">Name</label>
+          <input type="text" name="newName" id="newName" placeholder="Type name..." />
+          <label for="newGenres">Genres</label>
+          <input type="text" name="newGenres" id="newGenres" placeholder="Choose Genres..." />
+          <label for="newLabels">Labels</label>
+          <input type="text" name="newLabels" id="newLabels" placeholder="Choose Labels..." />
+          <label for="newDesc">Description</label>
+          <input type="text" name="newDesc" id="newDesc" placeholder="Choose Description..." />
+          <label for="newBirthdate">Birthdate</label>
+          <input type="date" name="newBirthdate" id="newBirthdate" placeholder="Change Birthdate..." />
+          <label for="newActive">Debut Year</label>
+          <input type="text" name="newActive" id="newActive" placeholder="Type debut year..." />
+          <label for="newWebsite">Website</label>
+          <input type="url" name="newWebsite" id="newWebsite" placeholder="Change Website..." />
+          <label for="newImage">Image</label>
+          <input type="url" name="newImage" id="newImage" placeholder="Change Image URL..." />
+          <button>CREATE</button>
+          <button type="button" id="btn-close-create">CLOSE</button>
+        </form>
+      </dialog>
+      <section id="grid-container"></section>
+      <dialog id="update-dialog">
+        <h2>EDIT ARTIST</h2>
+        <form action="" id="update-form">
+          <label for="updateName">Name</label>
+          <input type="text" name="updateName" id="updateName" placeholder="Change Name..." />
+          <label for="updateGenres">Genres</label>
+          <input type="text" name="updateGenres" id="updateGenres" placeholder="Change Genres..." />
+          <label for="updateLabels">Labels</label>
+          <input type="text" name="updateLabels" id="updateLabels" placeholder="Change Labels..." />
+          <label for="updateDesc">Description</label>
+          <input type="text" name="updateDesc" id="updateDesc" placeholder="Change Description..." />
+          <label for="updateBirthdate">Birthdate</label>
+          <input type="date" name="updateBirthdate" id="updateBirthdate" placeholder="Change Birthdate..." />
+          <label for="updateActive">Debut Year</label>
+          <input type="number" name="updateActive" id="updateActive" placeholder="Change Debut Year..." />
+          <label for="updateWebsite">Website</label>
+          <input type="url" name="updateWebsite" id="updateWebsite" placeholder="Change Website..." />
+          <label for="updateImage">Image</label>
+          <input type="url" name="updateImage" id="updateImage" placeholder="Change Image URL..." />
+          <button>SUBMIT</button>
+          <button type="button" id="btn-close-update">CLOSE</button>
+        </form>
+      </dialog>
+      <dialog id="delete-dialog">
+        <p>Are you sure you want to delete this artist?</p>
+        <button id="btn-delete-confirm">DELETE</button>
+        <button id="btn-delete-cancel">CANCEL</button>
+      </dialog>
+    </main>
+    <footer></footer>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
