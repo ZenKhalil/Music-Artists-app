@@ -1,28 +1,237 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f2f2f2;
 }
 
-header, footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
+nav {
+  background: linear-gradient(45deg, #2a2a2a, #555555);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+  text-align: center;
 }
 
-main {
-    padding: 1rem;
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+nav li {
+  margin: 0 15px;
+}
+
+nav a {
+  font-family: 'Montserrat', sans-serif;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0 10px;
+  color: white;
+}
+
+nav a:hover {
+  font-weight: 400;
+  color: #aaaaaa;
+}
+
+#search-bar {
+  position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    background-image: url('./images/magglas.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+    transition: width 0.3s ease;
+    margin-left: 30rem;
+    margin-top: -2.5rem;
+}
+
+#search-bar:focus {
+    width: 200px; /* adjust width as needed */
+    background-color: #ffffff;
+    background-image: none;
+    padding-left: 10px;
+    border: 1px solid #aaa;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+#search-bar::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+
+#content {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 50px;
+  justify-content: center; /* horizontally centers children */
+  align-items: center;     /* vertically centers children */
+}
+
+h1.favorites, h1.genre {
+  font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  text-align: center;
+  margin-top: -2rem;  /* Adjust as needed */
+  font-size: 2.5rem; /* bigger font size */
+    font-weight: bold;
+    letter-spacing: 2px; /* letter spacing */
+    color: #ffffff; /* white color for the text */
+    background: linear-gradient(45deg, #555555, #c26262); /* gradient background */
+    padding: 10px 20px; /* padding around the text */
+    border-radius: 10px; /* rounded corners */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+h1, h2, p {
+  color: #333;
+  margin: 20px 0;
+}
+
+button {
+  background-color: #4a4a4a;
+  border: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2a2a2a;
+}
+
+footer {
+  background-color: #2a2a2a;
+  padding: 20px 0;
+  text-align: center;
+  color: white;
+}
+
+.artist-card {
+    border: 1px solid #e1e1e1;
+    padding: 15px;
+    margin: 15px;
+    width: 20%;
+    box-sizing: border-box;
+    transition: transform 0.3s;
+}
+
+.artist-card:hover {
+    transform: scale(1.05);
+}
+
+.artist-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+#content {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+/* Add this to your CSS file */
+
+h1.centered-title {
+    text-align: center;          /* Center the text horizontally */
+    margin-top: 2rem;            /* Spacing from the top */
+    margin-bottom: 2rem;         /* Spacing from the bottom */
+    font-family: 'Montserrat', sans-serif; /* Using the Montserrat font */
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
     display: grid;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 76px !important;
+    position: relative;
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 40px;
+    border: 1px solid #888;
+    width: 80%;
+    box-sizing: border-box;
 }
 
-#artist-list {
-    display: flex;
-    flex-direction: column;
+.close-btn {
+    color: #aaa;
+    position: absolute; /* Changed from float to absolute to remove it from normal flow */
+    top: 8px;
+    right: 8px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-#artist-form {
+.close-btn:hover, .close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.genre-icon {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    transition: transform 0.3s ease;
+    flex: 1 0 auto; /* Allows the items to grow and shrink */
+    width: 100%; /* Ensures full width within grid cell */
+}
+
+.genre-icon img {
+   width: 100px;
+    height: 100px;
+    border-radius: 5%;
+    margin: 17px;
+    margin-left: 54px;
+    display: block;
+}
+
+.genre-icon p {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+.genre-icon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 600px) {
+    .genre-icon {
+        width: calc(50% - 10px);
+    }
+}
+
+@media (max-width: 400px) {
+    .genre-icon {
+        width: 100%;
+    }
+}
+
+.genre-row {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
 }
