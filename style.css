@@ -74,7 +74,7 @@ nav a:hover {
   align-items: center;     /* vertically centers children */
 }
 
-h1.favorites, h1.genre {
+h1.favorites {
   font-family: 'Montserrat', sans-serif;
   width: 100%;
   text-align: center;
@@ -87,6 +87,22 @@ h1.favorites, h1.genre {
     padding: 10px 20px; /* padding around the text */
     border-radius: 10px; /* rounded corners */
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+h1.genre {
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    text-align: center;
+    margin-top: -3rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: linear-gradient(45deg, #030303, #e4cfcf);
+    padding: 11px 23px;
+    border-radius: 26px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 

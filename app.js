@@ -8,6 +8,7 @@ let artists = [];
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 // Gemmer nuværende genre, hvis valgt
 let currentGenre = null; 
+let currentContext = 'home';  // default value
 
 // ========== Event Listeners ==========
 
@@ -55,6 +56,7 @@ function fetchArtists() {
         .then(response => response.json())
         .then(data => {
             artists = data;
+            window.artists = data; 
             // Tjek nuværende URL for at vise det korrekte indhold
             const currentPath = window.location.pathname;
             if (currentPath === '/artists') {
@@ -86,12 +88,13 @@ function showHome() {
 
 // Vis kunstnersiden
 function showArtists() {
+    currentContext = 'artists';
     const contentDiv = document.getElementById('content');
     let artistHTML = '';
     artists.forEach(artist => {
         artistHTML += `
             <div class="artist-card">
-                <img src="images/${artist.image}" alt="${artist.name}">
+                <img src="/images/${artist.image}" alt="${artist.name}">
                 <h3>${artist.name}</h3>
                 <p>${artist.shortDescription}</p>
                 <a href="${artist.website}" target="_blank">Visit Website</a>
@@ -115,6 +118,7 @@ function getUniqueGenres() {
 
 // Vis genrer i modal
 function showGenre(event) {
+    currentContext = 'genre';
     if(event) event.preventDefault();
     const uniqueGenres = getUniqueGenres();
     let genreListHTML = '';

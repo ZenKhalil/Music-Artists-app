@@ -12,32 +12,35 @@ function performSearch() {
     }
 
     const query = searchBar.value.toLowerCase();
-    const filteredArtists = window.artists.filter(artist => 
-        artist.name.toLowerCase().includes(query)
-    );
+    let filteredArtists = window.artists;
+
+    // Filter based on context
+    if (currentContext === 'artists') {
+        filteredArtists = filteredArtists.filter(artist => artist.name.toLowerCase().includes(query));
+    } else if (currentContext === 'genre') {
+        filteredArtists = filteredArtists.filter(artist => artist.genres.includes(currentGenre) && artist.name.toLowerCase().includes(query));
+    }
+    // Add conditions for other contexts if necessary...
 
     displayFilteredArtists(filteredArtists);
 }
 
 
-   function displayFilteredArtists(filteredArtists) {
-    if (!window.favorites) {
-        console.error("Favorites data has not been loaded yet.");
-        return;
-    }
-        let artistHTML = '';
-        filteredArtists.forEach(artist => {
-            artistHTML += `
-                <div class="artist-card">
-                    <img src="images/${artist.image}" alt="${artist.name}">
-                    <h3>${artist.name}</h3>
-                    <p>${artist.shortDescription}</p>
-                    <a href="${artist.website}" target="_blank">Visit Website</a>
-                    <button onclick="toggleFavorite(${artist.id})">${window.favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-                </div>`;
-        });
-        document.getElementById('content').innerHTML = artistHTML;
-    }
+
+function displayFilteredArtists(filteredArtists) {
+    let artistHTML = '';
+    filteredArtists.forEach(artist => {
+        artistHTML += `
+            <div class="artist-card">
+                <img src="/images/${artist.image}" alt="${artist.name}">
+                <h3>${artist.name}</h3>
+                <p>${artist.shortDescription}</p>
+                <a href="${artist.website}" target="_blank">Visit Website</a>
+                <button onclick="toggleFavorite(${artist.id})">${(window.favorites && window.favorites.includes(artist.id)) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+            </div>`;
+    });
+    document.getElementById('content').innerHTML = artistHTML;
+}
 
     // Event listeners
     searchBar.addEventListener("input", performSearch);
