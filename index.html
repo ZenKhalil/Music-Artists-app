@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GrooveMuze</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    
 </head>
 
 <body>
@@ -18,18 +21,27 @@
             <li><a href="#" id="about-link">About</a></li>
         </ul>
         <div>
-            <input type="search" id="search-bar" placeholder="Search...">
+            <input type="search" id="search-bar" placeholder="">
         </div>
     </nav>
     <div id="content">
         <!-- Indholdet skiftes her afhængigt af navigation -->
     </div>
 
+    <div id="genreModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div id="genre-content">
+            <!-- Genre contents will go here -->
+        </div>
+    </div>
+</div>
     <footer>
         <p>Udviklet af Mohammed-Zen</p>
     </footer>
 
     <script src="app.js"></script>
+    <script src="search.js"></script>
 
 </body>
 

@@ -295,5 +295,16 @@
     "website": "https://www.eminem.com",
     "image": "eminem.jpg",
     "shortDescription": "Legendary rapper and hip-hop artist."
+  },
+    {
+    "id": 28,
+    "name": "Prince",
+    "birthdate": "1958-06-07",
+    "activeSince": "1975-08-26",
+    "genres": ["R&B", "Pop"],
+    "labels": ["Warner Music"],
+    "website": "https://www.prince.com",
+    "image": "prince.jpg",
+    "shortDescription": "Iconic R&B and pop artist."
   }
 ]

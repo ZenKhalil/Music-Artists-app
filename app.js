@@ -1,40 +1,27 @@
 "use strict";
 
+// ========== Variabler ==========
+
+// Liste med alle kunstnere
 let artists = [];
+// Lokal gemte favoritkunstnere
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+// Gemmer nuværende genre, hvis valgt
 let currentGenre = null; 
 
+// ========== Event Listeners ==========
+
+// Hent kunstnere, når dokumentet er loaded
 document.addEventListener('DOMContentLoaded', () => {
     fetchArtists();
+
+    // Luk modal, når der klikkes på luk-knappen
+    document.querySelector('.close-btn').addEventListener('click', function() {
+        document.getElementById('genreModal').style.display = "none";
+    });
 });
 
-function fetchArtists() {
-    fetch('http://localhost:3000/artists')
-        .then(response => response.json())
-        .then(data => {
-            artists = data;
-            // Check current URL to display the correct content
-            const currentPath = window.location.pathname;
-            if (currentPath === '/artists') {
-                showArtists();
-            } else if (currentPath === '/genre') {
-                showGenre();
-            } else if (currentPath === '/favorites') {
-                showFavorites();
-            } else if (currentPath === '/about') {
-                showAbout();
-            } else {
-                showHome();
-            }
-            
-            document.getElementById('home-link').addEventListener('click', showHome);
-            document.getElementById('artists-link').addEventListener('click', showArtists);
-            document.getElementById('genre-link').addEventListener('click', showGenre);
-            document.getElementById('favorites-link').addEventListener('click', showFavorites);
-            document.getElementById('about-link').addEventListener('click', showAbout);
-        });
-}
-
+// Vis den relevante side, når browserens tilbage/frem-knapper bruges
 window.addEventListener('popstate', (event) => {
     if (event.state) {
         switch (event.state.view) {
@@ -57,32 +44,65 @@ window.addEventListener('popstate', (event) => {
     }
 });
 
+// Åbn genremodal, når der klikkes på genre-linket
+document.getElementById('genre-link').addEventListener('click', showGenre);
 
-const contentDiv = document.getElementById('content');
+// ========== Funktioner ==========
 
+// Hent kunstnere fra API
+function fetchArtists() {
+    fetch('http://localhost:3000/artists')
+        .then(response => response.json())
+        .then(data => {
+            artists = data;
+            // Tjek nuværende URL for at vise det korrekte indhold
+            const currentPath = window.location.pathname;
+            if (currentPath === '/artists') {
+                showArtists();
+            } else if (currentPath === '/genre') {
+                showGenre();
+            } else if (currentPath === '/favorites') {
+                showFavorites();
+            } else if (currentPath === '/about') {
+                showAbout();
+            } else {
+                showHome();
+            }
+            
+            // Tilføj event listeners til navigation links
+            document.getElementById('home-link').addEventListener('click', showHome);
+            document.getElementById('artists-link').addEventListener('click', showArtists);
+            document.getElementById('favorites-link').addEventListener('click', showFavorites);
+            document.getElementById('about-link').addEventListener('click', showAbout);
+        });
+}
+
+// Vis hjemmesiden
 function showHome() {
-    contentDiv.innerHTML = `<h1>Welcome to Artist Directory</h1>
-                            <p>Explore the world of music artists!</p>`;
+    const contentDiv = document.getElementById('content');
+    contentDiv.innerHTML = `<h1>Welcome to Artist Directory</h1><p>Explore the world of music artists!</p>`;
     history.pushState({ view: 'home' }, '', '/home');
 }
 
+// Vis kunstnersiden
 function showArtists() {
-    let artistListHTML = '<ul>';
+    const contentDiv = document.getElementById('content');
+    let artistHTML = '';
     artists.forEach(artist => {
-        artistListHTML += `
-        <li>
-            <h2>${artist.name}</h2>
-            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
-            <p>${artist.shortDescription}</p>
-            <a href="${artist.website}">Website</a>
-            <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-        </li>`;
+        artistHTML += `
+            <div class="artist-card">
+                <img src="images/${artist.image}" alt="${artist.name}">
+                <h3>${artist.name}</h3>
+                <p>${artist.shortDescription}</p>
+                <a href="${artist.website}" target="_blank">Visit Website</a>
+                <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+            </div>`;
     });
-    artistListHTML += '</ul>';
-    contentDiv.innerHTML = artistListHTML;
-   history.pushState({ view: 'artists' }, '', '/artists');
+    contentDiv.innerHTML = artistHTML;
+    history.pushState({ view: 'artists' }, '', '/artists');
 }
 
+// Få en unik liste over genrer
 function getUniqueGenres() {
     const genres = new Set();
     artists.forEach(artist => {
@@ -93,53 +113,66 @@ function getUniqueGenres() {
     return [...genres];
 }
 
-function showGenre() {
+// Vis genrer i modal
+function showGenre(event) {
+    if(event) event.preventDefault();
     const uniqueGenres = getUniqueGenres();
-    let genreListHTML = '<ul>';
-    uniqueGenres.forEach(genre => {
-        genreListHTML += `<li><a href="#" onclick="showArtistsByGenre('${genre}')">${genre}</a></li>`;
-    });
-    genreListHTML += '</ul>';
-    contentDiv.innerHTML = genreListHTML;
- history.pushState({ view: 'genre' }, '', '/genre');
+    let genreListHTML = '';
+uniqueGenres.forEach((genre, index) => {
+    if (index % 5 === 0) genreListHTML += `<div class="genre-row">`; // Begin a new row every 5 items
+
+    genreListHTML += `<div class="genre-icon" onclick="showArtistsByGenre('${genre}')">
+        <img src="/images/genre-icons/${genre}.png" alt="${genre}"> 
+        <p>${genre}</p>
+    </div>`;
+
+    if ((index + 1) % 5 === 0 || index === uniqueGenres.length - 1) genreListHTML += `</div>`; // End the row
+});
+    document.getElementById('genre-content').innerHTML = genreListHTML;
+    document.getElementById('genreModal').style.display = "block";
 }
 
+// Vis kunstnere baseret på genre
 function showArtistsByGenre(genre) {
+    const contentDiv = document.getElementById('content');
     currentGenre = genre; 
     const filteredArtists = artists.filter(artist => artist.genres.includes(genre));
-    let artistListHTML = `<h1>${genre}</h1><ul>`;
+    let artistListHTML = `<h1 class="genre">${genre}</h1>`;
     filteredArtists.forEach(artist => {
         artistListHTML += `
-        <li>
-            <h2>${artist.name}</h2>
-            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
-            <p>${artist.shortDescription}</p>
-            <a href="${artist.website}">Website</a>
-            <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-        </li>`;
+            <div class="artist-card">
+                <img src="/images/${artist.image}" alt="${artist.name}">
+                <h3>${artist.name}</h3>
+                <p>${artist.shortDescription}</p>
+                <a href="${artist.website}" target="_blank">Visit Website</a>
+                <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+            </div>`;
     });
-    artistListHTML += '</ul>';
-    contentDiv.innerHTML = artistListHTML;
+   contentDiv.innerHTML = artistListHTML;
+    history.pushState({ view: 'genre', genre: genre }, '', '/genre/' + genre);
+    document.getElementById('genreModal').style.display = "none";
 }
 
+// Vis favoritkunstnereside
 function showFavorites() {
-    let favoritesListHTML = '<h1>Favorites</h1><ul>';
+    const contentDiv = document.getElementById('content');
+    let favoritesListHTML = '<h1 class="favorites">Favorites</h1>';
     const favoriteArtists = artists.filter(artist => favorites.includes(artist.id));
     favoriteArtists.forEach(artist => {
         favoritesListHTML += `
-        <li>
-            <h2>${artist.name}</h2>
-            <img src="images/${artist.image}" alt="${artist.name}" width="100" />
-            <p>${artist.shortDescription}</p>
-            <a href="${artist.website}">Website</a>
-            <button onclick="toggleFavorite(${artist.id})">Remove from Favorites</button>
-        </li>`;
+            <div class="artist-card">
+                <img src="images/${artist.image}" alt="${artist.name}">
+                <h3>${artist.name}</h3>
+                <p>${artist.shortDescription}</p>
+                <a href="${artist.website}" target="_blank">Visit Website</a>
+                <button onclick="toggleFavorite(${artist.id})">Remove from Favorites</button>
+            </div>`;
     });
-    favoritesListHTML += '</ul>';
     contentDiv.innerHTML = favoritesListHTML;
-  history.pushState({ view: 'favorites' }, '', '/favorites');
+    history.pushState({ view: 'favorites' }, '', '/favorites');
 }
 
+// Skift kunstnerstatus til favorit
 function toggleFavorite(artistId) {
     if (favorites.includes(artistId)) {
         const index = favorites.indexOf(artistId);
@@ -149,22 +182,19 @@ function toggleFavorite(artistId) {
     }
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
-    // Check current URL to display the correct content
     const currentPath = window.location.pathname;
-
     if (currentPath === '/favorites') {
-        showFavorites();  // Update the favorites list immediately
+        showFavorites();
     } else if (currentPath === '/artists' || currentPath === '/') {
         showArtists();
     } else if (currentPath === '/genre' && currentGenre) {
         showArtistsByGenre(currentGenre); 
     } 
-    // ... add other paths as needed
 }
 
-
-
+// Vis Om Os side
 function showAbout() {
+    const contentDiv = document.getElementById('content');
     contentDiv.innerHTML = "<h1>About Us</h1><p>We are a platform dedicated to showcasing music artists.</p>";
     history.pushState({ view: 'about' }, '', '/about');
 }
