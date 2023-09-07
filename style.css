@@ -167,10 +167,11 @@ h1.centered-title {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 76px !important;
     position: relative;
-    background-color: #fefefe;
+    background-color: #fefefee8;
     margin: 10% auto;
     padding: 40px;
     border: 1px solid #888;
+    border-radius: 20px;
     width: 80%;
     box-sizing: border-box;
 }
@@ -216,7 +217,9 @@ h1.centered-title {
 
 .genre-icon:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.384);
+    background-color: #fefefee8;
+    border-radius: 20px;
 }
 
 @media (max-width: 600px) {
