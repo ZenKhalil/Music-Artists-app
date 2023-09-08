@@ -126,7 +126,7 @@ function showArtists() {
 // Generer HTML for kunstnere
 function generateArtistsHTML() {
     return artists.map(artist => `
-        <div class="artist-card">
+        <div class="artist-card" data-artist-id="${artist.id}" onclick="showArtistPreview(${artist.id})">
             <i class="delete-icon" onclick="deleteArtist(${artist.id})" title="Delete">✖</i>
             <img src="images/${artist.image}" alt="${artist.name}">
             <h3>${artist.name}</h3>
@@ -147,6 +147,39 @@ function getUniqueGenres() {
         });
     });
     return [...genres];
+}
+
+// En preview af kunster
+function showArtistPreview(artistId) {
+    const artist = artists.find(a => a.id === artistId);
+
+    const genres = artist.genres.join(', ');
+
+    const modalHTML = `
+        <div class="preview-modal">
+            <i class="close-preview-icon" onclick="closeArtistPreview()" title="Close">Close</i>
+            <img src="images/${artist.image}" alt="${artist.name}">
+            <h3>${artist.name}</h3>
+            <p><strong>Birthdate:</strong> ${artist.birthdate}</p>
+            <p><strong>Active Since:</strong> ${artist.activeSince}</p>
+            <p><strong>Genres:</strong> ${genres}</p>
+            <p>${artist.shortDescription}</p>
+            <a href="${artist.website}" target="_blank">Visit Website</a>
+            <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+        </div>
+    `;
+
+    // Append modal to body or any container you want
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHTML;
+    document.body.appendChild(modalContainer);
+    document.querySelector('.preview-modal').style.display = 'block';
+}
+
+function closeArtistPreview() {
+    // Remove the modal from the body
+    const modal = document.querySelector('.preview-modal');
+    modal.parentElement.remove();
 }
 
 // Vis genrer i modal

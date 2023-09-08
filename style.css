@@ -120,6 +120,7 @@ nav a:hover {
     width: 20%;
     box-sizing: border-box;
     transition: transform 0.3s;
+    cursor: pointer;
 }
 
 .artist-card:hover {
@@ -130,6 +131,48 @@ nav a:hover {
     max-width: 100%;
     height: auto;
     margin-bottom: 15px;
+}
+
+@keyframes sideSpinAndScaleUp {
+  0% {
+    transform: rotateY(90deg) scale(0.5);
+  }
+  50% {
+    transform: rotateY(-15deg) scale(1.05);
+  }
+  100% {
+    transform: rotateY(0deg) scale(1);
+  }
+}
+
+.preview-modal {
+    display: none; /* initially hidden */
+    position: fixed; /* changed from absolute to fixed */
+    top: 20%; /* center vertically in the viewport */
+    left: 38%; /* center horizontally in the viewport */
+    transform: translate(-50%, -50%) rotateY(90deg) scale(0.5);
+    background-color: white;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    animation: sideSpinAndScaleUp 0.5s forwards;
+}
+
+.preview-modal img {
+    width: 100%;
+    max-width: 300px;
+}
+
+.close-preview-icon {
+    cursor: pointer;
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    z-index: 10; 
 }
 
 h1.favorites, h1.genre {
