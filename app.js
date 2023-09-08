@@ -4,6 +4,7 @@
 
 // Liste med alle kunstnere
 let artists = [];
+window.toggleFavorite = toggleFavorite; // Add this line
 // Lokal gemte favoritkunstnere
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 // Gemmer nuværende genre, hvis valgt
@@ -156,11 +157,11 @@ function showArtistsByGenre(genre) {
 
 // Vis favoritkunstnereside
 function showFavorites() {
-    const contentDiv = document.getElementById('content');
-    let favoritesListHTML = '<h1 class="favorites">Favorites</h1>';
+    const contentDiv = document.getElementById('content'); // Define the contentDiv here.
+  let favoritesListHTML = '<h1 class="favorites">Favorites</h1>';
     const favoriteArtists = artists.filter(artist => favorites.includes(artist.id));
     favoriteArtists.forEach(artist => {
-        favoritesListHTML += `
+       favoritesListHTML += `
             <div class="artist-card">
                 <img src="images/${artist.image}" alt="${artist.name}">
                 <h3>${artist.name}</h3>
@@ -169,13 +170,18 @@ function showFavorites() {
                 <button onclick="toggleFavorite(${artist.id})">Remove from Favorites</button>
             </div>`;
     });
+    favoritesListHTML += '</ul>';
     contentDiv.innerHTML = favoritesListHTML;
     history.pushState({ view: 'favorites' }, '', '/favorites');
 }
 
+
+
 // Skift kunstnerstatus til favorit
 function toggleFavorite(artistId) {
-    if (favorites.includes(artistId)) {
+    const wasFavorited = favorites.includes(artistId);
+
+    if (wasFavorited) {
         const index = favorites.indexOf(artistId);
         favorites.splice(index, 1);
     } else {
@@ -183,15 +189,19 @@ function toggleFavorite(artistId) {
     }
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
-    const currentPath = window.location.pathname;
-    if (currentPath === '/favorites') {
+    // Update only the specific artist's favorite button, without refreshing the whole page
+    const favoriteButton = document.querySelector(`button[onclick="toggleFavorite(${artistId})"]`);
+    if (favoriteButton) {
+        favoriteButton.textContent = wasFavorited ? 'Add to Favorites' : 'Remove from Favorites';
+    }
+
+    // Refresh favorites view if an artist is removed and the current page is favorites
+    if (wasFavorited && window.location.pathname === '/favorites') {
         showFavorites();
-    } else if (currentPath === '/artists' || currentPath === '/') {
-        showArtists();
-    } else if (currentPath === '/genre' && currentGenre) {
-        showArtistsByGenre(currentGenre); 
-    } 
+    }
 }
+
+
 
 // Vis Om Os side
 function showAbout() {
