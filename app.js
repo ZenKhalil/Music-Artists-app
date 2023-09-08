@@ -242,7 +242,8 @@ function handleCreateArtistFormSubmission(event) {
     // POST the new artist data to the server
     fetch('http://localhost:3000/artists', {
         method: 'POST',
-        headers: {        'Content-Type': 'application/json'
+        headers: {        
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(newArtist)
     })
@@ -254,10 +255,14 @@ function handleCreateArtistFormSubmission(event) {
         }
     })
     .then(artist => {
-        // Assuming you want to immediately add the newly created artist to the local array and then display them
         artists.push(artist);
-        showArtists(); // Or any other function you'd like to call to refresh your content after adding a new artist
-        alert('Artist added successfully!');
+        showArtists();
+        
+        // Close the "Create Artist" modal.
+        document.getElementById('createArtistModal').style.display = "none";
+        
+        // Show the success dialog.
+        alert('Artist has been created :)');
     })
     .catch(error => {
         console.error("Error adding artist:", error);
