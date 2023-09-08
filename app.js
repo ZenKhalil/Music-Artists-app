@@ -186,7 +186,13 @@ function showArtistsByGenre(genre) {
 function showCreateArtistForm(event) {
     if(event) event.preventDefault();
     const uniqueGenres = getUniqueGenres();
-    const genreOptions = uniqueGenres.map(genre => `<option value="${genre}">${genre}</option>`).join('');
+ const genreBobbles = uniqueGenres.map(genre => `
+    <input type="checkbox" id="genre-${genre}" name="genres" value="${genre}">
+    <label class="genre-bobble" for="genre-${genre}">
+        <span>${genre}</span>
+        </label>
+        `).join('');
+
     const formHTML = `
         <h1 id="createText">Create New Artist</h1>
         <form id="create-artist-form">
@@ -196,8 +202,10 @@ function showCreateArtistForm(event) {
             <input type="date" id="birthdate" required>
             <label for="activeSince">Active Since:</label>
             <input type="date" id="activeSince" required>
-            <label for="genres">Genres:</label>
-            <select id="genres" multiple required>${genreOptions}</select>
+            <label>Genres:</label>
+            <div id="genres-bobbles">
+                ${genreBobbles}
+            </div>
             <label for="labels">Labels (comma-separated):</label>
             <input type="text" id="labels" required>
             <label for="website">Website:</label>
@@ -209,6 +217,7 @@ function showCreateArtistForm(event) {
             <button type="submit">Create Artist</button>
         </form>
     `;
+
     document.getElementById('create-artist-content').innerHTML = formHTML;
     document.getElementById('createArtistModal').style.display = "block";
 
@@ -223,7 +232,7 @@ function handleCreateArtistFormSubmission(event) {
         name: document.getElementById('name').value,
         birthdate: document.getElementById('birthdate').value,
         activeSince: document.getElementById('activeSince').value,
-        genres: Array.from(document.getElementById('genres').selectedOptions).map(option => option.value),
+        genres: Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(checkbox => checkbox.value),
         labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
         website: document.getElementById('website').value,
         image: document.getElementById('image').value,

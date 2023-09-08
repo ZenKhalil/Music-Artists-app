@@ -330,3 +330,35 @@ footer {
         width: 100%;
     }
 }
+
+
+/* Gengre booble */
+
+#genres-bobbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.genre-bobble {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;  
+    border: 2px solid lightgray;
+    border-radius: 25px;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.2s;
+}
+
+input[type="checkbox"] {
+    display: none; 
+}
+
+input[type="checkbox"]:checked + .genre-bobble {
+    background-color: rgb(233, 113, 113);
+}
+
+input[type="checkbox"]:checked + .genre-bobble span {
+    color: white;
+}
