@@ -4,28 +4,77 @@
 
 // Liste med alle kunstnere
 let artists = [];
-window.toggleFavorite = toggleFavorite; // Add this line
+window.toggleFavorite = toggleFavorite; // Gør denne funktion tilgængelig globalt
+
 // Lokal gemte favoritkunstnere
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
 // Gemmer nuværende genre, hvis valgt
 let currentGenre = null; 
 
 // ========== Event Listeners ==========
 
-// Hent kunstnere, når dokumentet er loaded
+// Når dokumentet er loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Hent kunstnerne
     fetchArtists();
 
-    // Luk modal, når der klikkes på luk-knappen
-    document.querySelector('.close-btn').addEventListener('click', function() {
+    // Tilføj event listener for at lukke modalen
+    document.querySelector('.close-btn').addEventListener('click', () => {
         document.getElementById('genreModal').style.display = "none";
     });
 });
 
-// Vis den relevante side, når browserens tilbage/frem-knapper bruges
+// Når browserens tilbage/frem-knapper bruges
 window.addEventListener('popstate', (event) => {
-    if (event.state) {
-        switch (event.state.view) {
+    navigateBasedOnState(event.state);
+});
+
+// Åbn genremodal, når der klikkes på genre-linket
+document.getElementById('genre-link').addEventListener('click', showGenre);
+
+// Luk "Create Artist" modalen
+document.querySelector('.close-btn-create').addEventListener('click', () => {
+    document.getElementById('createArtistModal').style.display = "none";
+});
+
+// ========== Funktioner ==========
+
+// Hent kunstnere fra API
+function fetchArtists() {
+    fetch('http://localhost:3000/artists')
+        .then(response => response.json())
+        .then(data => {
+            artists = data;
+            navigateBasedOnURL(window.location.pathname);
+            setupNavigationLinks();
+        });
+}
+
+// Håndter navigation baseret på nuværende URL
+function navigateBasedOnURL(path) {
+    switch (path) {
+        case '/artists':
+            showArtists();
+            break;
+        case '/genre':
+            showGenre();
+            break;
+        case '/favorites':
+            showFavorites();
+            break;
+        case '/about':
+            showAbout();
+            break;
+        default:
+            showHome();
+    }
+}
+
+// Håndter navigation baseret på state
+function navigateBasedOnState(state) {
+    if (state) {
+        switch (state.view) {
             case 'home':
                 showHome();
                 break;
@@ -43,45 +92,16 @@ window.addEventListener('popstate', (event) => {
                 break;
         }
     }
-});
-
-// Åbn genremodal, når der klikkes på genre-linket
-document.getElementById('genre-link').addEventListener('click', showGenre);
-
-// ========== Funktioner ==========
-
-// Hent kunstnere fra API
-function fetchArtists() {
-    fetch('http://localhost:3000/artists')
-        .then(response => response.json())
-        .then(data => {
-            artists = data;
-            // Tjek nuværende URL for at vise det korrekte indhold
-            const currentPath = window.location.pathname;
-            if (currentPath === '/artists') {
-                showArtists();
-            } else if (currentPath === '/genre') {
-                showGenre();
-            } else if (currentPath === '/favorites') {
-                showFavorites();
-            } else if (currentPath === '/about') {
-                showAbout();
-            } else {
-                showHome();
-            }
-            
-            // Tilføj event listeners til navigation links
-            document.getElementById('home-link').addEventListener('click', showHome);
-            document.getElementById('artists-link').addEventListener('click', showArtists);
-            document.getElementById('create-artist-link').addEventListener('click', showCreateArtistForm);
-            document.getElementById('favorites-link').addEventListener('click', showFavorites);
-            document.getElementById('about-link').addEventListener('click', showAbout);
-        });
 }
 
-document.querySelector('.close-btn-create').addEventListener('click', function() {
-    document.getElementById('createArtistModal').style.display = "none";
-});
+// Sæt event listeners til navigation links
+function setupNavigationLinks() {
+    document.getElementById('home-link').addEventListener('click', showHome);
+    document.getElementById('artists-link').addEventListener('click', showArtists);
+    document.getElementById('create-artist-link').addEventListener('click', showCreateArtistForm);
+    document.getElementById('favorites-link').addEventListener('click', showFavorites);
+    document.getElementById('about-link').addEventListener('click', showAbout);
+}
 
 // Vis hjemmesiden
 function showHome() {
@@ -93,19 +113,21 @@ function showHome() {
 // Vis kunstnersiden
 function showArtists() {
     const contentDiv = document.getElementById('content');
-    let artistHTML = '';
-    artists.forEach(artist => {
-        artistHTML += `
-            <div class="artist-card">
-                <img src="images/${artist.image}" alt="${artist.name}">
-                <h3>${artist.name}</h3>
-                <p>${artist.shortDescription}</p>
-                <a href="${artist.website}" target="_blank">Visit Website</a>
-                <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-            </div>`;
-    });
-    contentDiv.innerHTML = artistHTML;
+    contentDiv.innerHTML = generateArtistsHTML();
     history.pushState({ view: 'artists' }, '', '/artists');
+}
+
+// Generer HTML for kunstnere
+function generateArtistsHTML() {
+    return artists.map(artist => `
+        <div class="artist-card">
+            <img src="images/${artist.image}" alt="${artist.name}">
+            <h3>${artist.name}</h3>
+            <p>${artist.shortDescription}</p>
+            <a href="${artist.website}" target="_blank">Visit Website</a>
+            <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+        </div>`
+    ).join('');
 }
 
 // Få en unik liste over genrer
@@ -160,10 +182,11 @@ function showArtistsByGenre(genre) {
     document.getElementById('genreModal').style.display = "none";
 }
 
-
 // Vis Lav en ny Artists form
 function showCreateArtistForm(event) {
     if(event) event.preventDefault();
+    const uniqueGenres = getUniqueGenres();
+    const genreOptions = uniqueGenres.map(genre => `<option value="${genre}">${genre}</option>`).join('');
     const formHTML = `
         <h1 id="createText">Create New Artist</h1>
         <form id="create-artist-form">
@@ -173,8 +196,8 @@ function showCreateArtistForm(event) {
             <input type="date" id="birthdate" required>
             <label for="activeSince">Active Since:</label>
             <input type="date" id="activeSince" required>
-            <label for="genres">Genres (comma-separated):</label>
-            <input type="text" id="genres" required>
+            <label for="genres">Genres:</label>
+            <select id="genres" multiple required>${genreOptions}</select>
             <label for="labels">Labels (comma-separated):</label>
             <input type="text" id="labels" required>
             <label for="website">Website:</label>
@@ -200,7 +223,7 @@ function handleCreateArtistFormSubmission(event) {
         name: document.getElementById('name').value,
         birthdate: document.getElementById('birthdate').value,
         activeSince: document.getElementById('activeSince').value,
-        genres: document.getElementById('genres').value.split(',').map(s => s.trim()),
+        genres: Array.from(document.getElementById('genres').selectedOptions).map(option => option.value),
         labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
         website: document.getElementById('website').value,
         image: document.getElementById('image').value,
