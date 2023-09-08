@@ -1,14 +1,30 @@
 import express from 'express';
 import cors from 'cors';
 import artists from './artists.json' assert { type: "json" };
-import loginRouter from './login.js';
 
 const app = express();
 const port = 3000;
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "password123";
 
 app.use(cors());
-app.use(express.json()); // Dette gør, at vi kan læse JSON fra POST-anmodninger
-app.use('/admin-login', loginRouter);
+app.use(express.json());
+
+// Rest of your routes...
+
+// Login route
+// Check admin credentials
+app.post('/admin-login', (req, res) => {
+    console.log("Received:", req.body);  // Add this line
+
+    const { username, password } = req.body;
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid credentials' });  // Added a status code here
+    }
+});
 
 // 1. Læs alle kunstnere
 app.get('/artists', (req, res) => {

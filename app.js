@@ -128,14 +128,14 @@ function generateArtistsHTML() {
     return artists.map(artist => `
         <div class="artist-card" data-artist-id="${artist.id}">
             <div class="artist-image-container" onclick="showArtistPreview(${artist.id})">
-                <i class="delete-icon" onclick="deleteArtist(${artist.id})" title="Delete">✖</i>
+                ${isLoggedIn ? `<i class="delete-icon" onclick="deleteArtist(${artist.id})" title="Delete">✖</i>` : ''}
                 <img src="images/${artist.image}" alt="${artist.name}">
             </div>
             <h3>${artist.name}</h3>
             <p>${artist.shortDescription}</p>
             <a href="${artist.website}" target="_blank">Visit Website</a>
             <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
-            <i class="edit-icon" onclick="showEditArtistForm(${artist.id})">🖊️</i>
+            ${isLoggedIn ? `<i class="edit-icon" onclick="showEditArtistForm(${artist.id})">🖊️</i>` : ''}
         </div>`
     ).join('');
 }
@@ -151,9 +151,6 @@ function getUniqueGenres() {
     return [...genres];
 }
 
-let isPreviewModalOpen = false;
-
-// En preview af kunster
 // En preview af kunster
 function showArtistPreview(artistId) {
     // Check if a preview modal is already open
@@ -424,7 +421,6 @@ function handleEditArtistFormSubmission(event) {
         alert('There was an issue updating the artist. Please try again.');
     });
 }
-
 
 // Vis favoritkunstnereside
 function showFavorites() {

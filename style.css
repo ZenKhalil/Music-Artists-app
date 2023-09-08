@@ -444,4 +444,75 @@ input[type="checkbox"]:checked + .genre-bobble span {
     color: white;
 }
 
+/* Login Dialog Styles */
+#loginDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10000; /* Ensure it appears on top */
+}
 
+#loginDialog h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+#loginDialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#loginDialog label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#loginDialog input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#loginDialog button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#loginDialog button:hover {
+    background-color: #0056b3;
+}
+
+body.dialog-open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* This will give a semi-transparent black background */
+    z-index: 9999; /* Ensure it's below the dialog but above other items */
+}
+
+#closeLogin {
+    font-size: 24px;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+#closeLogin:hover {
+    color: #111;
+}
