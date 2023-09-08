@@ -297,30 +297,39 @@ function showEditArtistForm(artistId) {
         <h1 id="editText">Edit Artist</h1>
         <form id="edit-artist-form" data-artist-id="${artistId}">
             <label for="name">Name:</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name">
             <label for="birthdate">Birthdate:</label>
-            <input type="date" id="birthdate" required>
+            <input type="date" id="birthdate">
             <label for="activeSince">Active Since:</label>
-            <input type="date" id="activeSince" required>
+            <input type="date" id="activeSince">
             <label>Genres:</label>
             <div id="genres-bobbles">
                 ${genreBobbles}
             </div>
             <label for="labels">Labels (comma-separated):</label>
-            <input type="text" id="labels" required>
+            <input type="text" id="labels">
             <label for="website">Website:</label>
-            <input type="url" id="website" required>
+            <input type="url" id="website">
             <label for="image">Image File Name:</label>
-            <input type="text" id="image" required>
+            <input type="text" id="image">
             <label for="shortDescription">Short Description:</label>
-            <textarea id="shortDescription" required></textarea>
+            <textarea id="shortDescription"></textarea>
             <button type="submit">Save Changes</button>
         </form>
     `;
 
-    document.getElementById('edit-artist-content').innerHTML = formHTML;
-    document.getElementById('editArtistModal').style.display = "block";
+     document.getElementById('edit-artist-content').innerHTML = formHTML;
 
+    // Pre-populate the fields
+    document.getElementById('name').value = artist.name;
+    document.getElementById('birthdate').value = artist.birthdate;
+    document.getElementById('activeSince').value = artist.activeSince;
+    document.getElementById('labels').value = artist.labels.join(', ');
+    document.getElementById('website').value = artist.website;
+    document.getElementById('image').value = artist.image;
+    document.getElementById('shortDescription').value = artist.shortDescription;
+
+    document.getElementById('editArtistModal').style.display = "block";
     document.getElementById('edit-artist-form').addEventListener('submit', handleEditArtistFormSubmission);
 }
 
