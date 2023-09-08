@@ -38,6 +38,12 @@ document.querySelector('.close-btn-create').addEventListener('click', () => {
     document.getElementById('createArtistModal').style.display = "none";
 });
 
+// Åben rediger kunster og luk
+document.querySelector('.close-btn-edit').addEventListener('click', () => {
+    document.getElementById('editArtistModal').style.display = "none";
+});
+
+
 // ========== Funktioner ==========
 
 // Hent kunstnere fra API
@@ -121,11 +127,13 @@ function showArtists() {
 function generateArtistsHTML() {
     return artists.map(artist => `
         <div class="artist-card">
+            <i class="delete-icon" onclick="deleteArtist(${artist.id})" title="Delete">✖</i>
             <img src="images/${artist.image}" alt="${artist.name}">
             <h3>${artist.name}</h3>
             <p>${artist.shortDescription}</p>
             <a href="${artist.website}" target="_blank">Visit Website</a>
             <button onclick="toggleFavorite(${artist.id})">${favorites.includes(artist.id) ? 'Remove from Favorites' : 'Add to Favorites'}</button>
+            <i class="edit-icon" onclick="showEditArtistForm(${artist.id})">🖊️</i>
         </div>`
     ).join('');
 }
@@ -270,6 +278,96 @@ function handleCreateArtistFormSubmission(event) {
     });
 }
 
+// Redigere kunstner
+function showEditArtistForm(artistId) {
+    const artist = artists.find(a => a.id === artistId);
+
+    // Set the image source
+    document.getElementById('EditArtistImage').src = `images/${artist.image}`;
+    
+    const uniqueGenres = getUniqueGenres();
+    const genreBobbles = uniqueGenres.map(genre => `
+        <input type="checkbox" id="genre-${genre}" name="genres" value="${genre}" ${artist.genres.includes(genre) ? 'checked' : ''}>
+        <label class="genre-bobble" for="genre-${genre}">
+            <span>${genre}</span>
+        </label>
+    `).join('');
+
+    const formHTML = `
+        <h1 id="editText">Edit Artist</h1>
+        <form id="edit-artist-form" data-artist-id="${artistId}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="birthdate">Birthdate:</label>
+            <input type="date" id="birthdate" required>
+            <label for="activeSince">Active Since:</label>
+            <input type="date" id="activeSince" required>
+            <label>Genres:</label>
+            <div id="genres-bobbles">
+                ${genreBobbles}
+            </div>
+            <label for="labels">Labels (comma-separated):</label>
+            <input type="text" id="labels" required>
+            <label for="website">Website:</label>
+            <input type="url" id="website" required>
+            <label for="image">Image File Name:</label>
+            <input type="text" id="image" required>
+            <label for="shortDescription">Short Description:</label>
+            <textarea id="shortDescription" required></textarea>
+            <button type="submit">Save Changes</button>
+        </form>
+    `;
+
+    document.getElementById('edit-artist-content').innerHTML = formHTML;
+    document.getElementById('editArtistModal').style.display = "block";
+
+    document.getElementById('edit-artist-form').addEventListener('submit', handleEditArtistFormSubmission);
+}
+
+// Send data videre
+function handleEditArtistFormSubmission(event) {
+    event.preventDefault();
+    const artistId = event.target.getAttribute('data-artist-id');
+    
+    const updatedArtist = {
+        name: document.getElementById('name').value,
+        birthdate: document.getElementById('birthdate').value,
+        activeSince: document.getElementById('activeSince').value,
+        genres: Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(checkbox => checkbox.value),
+        labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
+        website: document.getElementById('website').value,
+        image: document.getElementById('image').value,
+        shortDescription: document.getElementById('shortDescription').value
+    };
+
+    fetch(`http://localhost:3000/artists/${artistId}`, {
+        method: 'PUT',
+        headers: {        
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedArtist)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Failed to update artist");
+        }
+    })
+    .then(artist => {
+        const artistIndex = artists.findIndex(a => a.id === artistId);
+        artists[artistIndex] = artist;
+        showArtists();
+        document.getElementById('editArtistModal').style.display = "none";
+        alert('Artist has been updated :)');
+    })
+    .catch(error => {
+        console.error("Error updating artist:", error);
+        alert('There was an issue updating the artist. Please try again.');
+    });
+}
+
+
 // Vis favoritkunstnereside
 function showFavorites() {
     const contentDiv = document.getElementById('content'); // Define the contentDiv here.
@@ -288,6 +386,32 @@ function showFavorites() {
     favoritesListHTML += '</ul>';
     contentDiv.innerHTML = favoritesListHTML;
     history.pushState({ view: 'favorites' }, '', '/favorites');
+}
+
+// Slet kunstner
+function deleteArtist(artistId) {
+    // Confirm before deleting
+    const confirmDelete = window.confirm("Are you sure you want to delete this artist?");
+    if (!confirmDelete) return;
+
+    fetch(`http://localhost:3000/artists/${artistId}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (response.ok) {
+            // Remove the artist from the artists array
+            artists = artists.filter(artist => artist.id !== artistId);
+            // Update the displayed list of artists
+            showArtists();
+            alert('Artist has been deleted :)');
+        } else {
+            throw new Error("Failed to delete artist");
+        }
+    })
+    .catch(error => {
+        console.error("Error deleting artist:", error);
+        alert('There was an issue deleting the artist. Please try again.');
+    });
 }
 
 // Skift kunstnerstatus til favorit

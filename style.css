@@ -247,7 +247,7 @@ footer {
     justify-content: space-between;
 }
 
-.close-btn-create {
+.close-btn-create, .close-btn-edit {
     position: absolute;
     right: 10px;
     top: 10px;
@@ -255,7 +255,8 @@ footer {
     cursor: pointer;
 }
 
-#create-artist-content form {
+/* For the forms inside both modals */
+#create-artist-content form, #edit-artist-content form {
     display: grid;
     gap: 20px;
     width: 80%;
@@ -303,18 +304,41 @@ footer {
     background-color: #0056b3; /* Darkening the button on hover */
 }
 
-#createText {
+#createText, #editText {
   display: block;
   margin-bottom: 8px;
   font-weight: 500; 
   text-align: center;  /* This will center the text horizontally */
 }
 
-#CreateArtist {
+#CreateArtist, #EditArtist {
     width: 88px;
     height: auto;
     display: block;
     margin: 0 auto -36px auto;
+}
+
+.edit-icon {
+    cursor: pointer;
+}
+
+#EditArtistImage {
+    display: block;
+    max-width: 50%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: -31px;
+}
+
+.delete-icon {
+    margin-right: auto;
+    top: -10px;
+    right: -200px;
+    position: relative;
+    display: block;
+    cursor: pointer;
+    font-style: normal;
 }
 
 /* ============ Media Queries ============ */
@@ -362,3 +386,5 @@ input[type="checkbox"]:checked + .genre-bobble {
 input[type="checkbox"]:checked + .genre-bobble span {
     color: white;
 }
+
+
