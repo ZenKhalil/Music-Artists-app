@@ -200,10 +200,24 @@ h1.genre {
 /* ============ Footer ============ */
 
 footer {
-    background-color: var(--primary-color);
-    padding: 20px 0;
-    text-align: center;
-    color: white;
+  background-color: #000000bf;
+  color: #fff;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+footer p {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #333; /* Darker background color for contrast */
+    color: #fff;
+    margin: 0;
+    padding: 10px;
+    text-align: center; /* Center align the text horizontally */
+    font-size: 14px; /* Adjust the font size as needed */
+    border-top: 1px solid #555; /* Add a subtle top border for separation */
+    opacity: 0.8; /* Adjust the opacity for a subtle effect */
 }
 
 /* ============ Modal Styles ============ */
