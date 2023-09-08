@@ -73,10 +73,15 @@ function fetchArtists() {
             // Tilføj event listeners til navigation links
             document.getElementById('home-link').addEventListener('click', showHome);
             document.getElementById('artists-link').addEventListener('click', showArtists);
+            document.getElementById('create-artist-link').addEventListener('click', showCreateArtistForm);
             document.getElementById('favorites-link').addEventListener('click', showFavorites);
             document.getElementById('about-link').addEventListener('click', showAbout);
         });
 }
+
+document.querySelector('.close-btn-create').addEventListener('click', function() {
+    document.getElementById('createArtistModal').style.display = "none";
+});
 
 // Vis hjemmesiden
 function showHome() {
@@ -155,6 +160,79 @@ function showArtistsByGenre(genre) {
     document.getElementById('genreModal').style.display = "none";
 }
 
+
+// Vis Lav en ny Artists form
+function showCreateArtistForm(event) {
+    if(event) event.preventDefault();
+    const formHTML = `
+        <h1 id="createText">Create New Artist</h1>
+        <form id="create-artist-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="birthdate">Birthdate:</label>
+            <input type="date" id="birthdate" required>
+            <label for="activeSince">Active Since:</label>
+            <input type="date" id="activeSince" required>
+            <label for="genres">Genres (comma-separated):</label>
+            <input type="text" id="genres" required>
+            <label for="labels">Labels (comma-separated):</label>
+            <input type="text" id="labels" required>
+            <label for="website">Website:</label>
+            <input type="url" id="website" required>
+            <label for="image">Image File Name:</label>
+            <input type="text" id="image" required>
+            <label for="shortDescription">Short Description:</label>
+            <textarea id="shortDescription" required></textarea>
+            <button type="submit">Create Artist</button>
+        </form>
+    `;
+    document.getElementById('create-artist-content').innerHTML = formHTML;
+    document.getElementById('createArtistModal').style.display = "block";
+
+    // Add event listener to handle form submission
+    document.getElementById('create-artist-form').addEventListener('submit', handleCreateArtistFormSubmission);
+}
+
+function handleCreateArtistFormSubmission(event) {
+    event.preventDefault();
+    
+    const newArtist = {
+        name: document.getElementById('name').value,
+        birthdate: document.getElementById('birthdate').value,
+        activeSince: document.getElementById('activeSince').value,
+        genres: document.getElementById('genres').value.split(',').map(s => s.trim()),
+        labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
+        website: document.getElementById('website').value,
+        image: document.getElementById('image').value,
+        shortDescription: document.getElementById('shortDescription').value
+    };
+
+    // POST the new artist data to the server
+    fetch('http://localhost:3000/artists', {
+        method: 'POST',
+        headers: {        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newArtist)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Failed to create a new artist");
+        }
+    })
+    .then(artist => {
+        // Assuming you want to immediately add the newly created artist to the local array and then display them
+        artists.push(artist);
+        showArtists(); // Or any other function you'd like to call to refresh your content after adding a new artist
+        alert('Artist added successfully!');
+    })
+    .catch(error => {
+        console.error("Error adding artist:", error);
+        alert('There was an issue adding the artist. Please try again.');
+    });
+}
+
 // Vis favoritkunstnereside
 function showFavorites() {
     const contentDiv = document.getElementById('content'); // Define the contentDiv here.
@@ -174,8 +252,6 @@ function showFavorites() {
     contentDiv.innerHTML = favoritesListHTML;
     history.pushState({ view: 'favorites' }, '', '/favorites');
 }
-
-
 
 // Skift kunstnerstatus til favorit
 function toggleFavorite(artistId) {
@@ -200,8 +276,6 @@ function toggleFavorite(artistId) {
         showFavorites();
     }
 }
-
-
 
 // Vis Om Os side
 function showAbout() {
