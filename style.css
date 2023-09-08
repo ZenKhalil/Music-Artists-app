@@ -444,6 +444,17 @@ input[type="checkbox"]:checked + .genre-bobble span {
     color: white;
 }
 
+.nav-logo {
+    position: absolute;
+    top: 5px;
+    width: 88px;
+    left: 74px;
+}
+.nav-right {
+    display: flex;
+    align-items: center; 
+}
+
 /* Login Dialog Styles */
 #loginDialog {
     position: fixed;

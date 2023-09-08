@@ -1,51 +1,110 @@
-import express from 'express';
+let isLoggedIn = false; // This flag checks if an admin is currently logged in
 
-const loginRouter = express.Router();
+// Constants for admin username and password (in a real application, you'd securely hash and salt the password)
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "password123"; // Replace with a stronger password
 
-// Define the admin password (replace with your desired password)
-const ADMIN_PASSWORD = '124578';
+// Function to show the login dialog
+function showLoginDialog() {
+    const loginHTML = `
+        <div id="loginDialog">
+            <span id="closeLogin" style="cursor:pointer; position:absolute; right: 10px; top: 5px;">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label>
+                    Username:
+                    <input type="text" id="username" required>
+                </label>
+                <label>
+                    Password:
+                    <input type="password" id="password" required>
+                </label>
+                <button type="submit">Login</button>
+            </form>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', loginHTML);
+    console.log("Login dialog appended to the body"); // Add this log
 
-// Initialize user data (you can store this in a database)
-const users = [
-  {
-    username: 'admin', // The admin username
-    password: ADMIN_PASSWORD,
-    role: 'admin', // The role can be 'admin' or 'user'
-  },
-  // Add more users here if needed
-];
+    document.body.classList.add('dialog-open');  // <-- Add this line
 
-// Middleware to authenticate users
-function authenticateUser(req, res, next) {
-  const { username, password } = req.body;
-
-  // Check if a user with the provided username and password exists
-  const user = users.find(u => u.username === username && u.password === password);
-
-  if (user) {
-    // Set the authenticated user and role in the request object
-    req.user = user;
-    next(); // Continue to the next middleware or route
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
+    document.getElementById('loginForm').addEventListener('submit', handleLoginFormSubmission);
+    document.getElementById('closeLogin').addEventListener('click', closeLoginDialog);
 }
 
-// Middleware to authorize admin access
-function authorizeAdmin(req, res, next) {
-  if (req.user && req.user.role === 'admin') {
-    // User is authenticated and has admin role, proceed
-    next();
-  } else {
-    res.status(403).json({ success: false, message: 'Access denied' });
-  }
+// Function to close the login dialog
+function closeLoginDialog() {
+    const dialog = document.getElementById('loginDialog');
+    if (dialog) dialog.remove();
+
+    document.body.classList.remove('dialog-open');  // <-- Add this line
 }
 
-// Login endpoint
-loginRouter.post('/', authenticateUser, (req, res) => {
-  // If the user reaches this point, they are authenticated
-  // You can generate a token or session here if needed
-  res.json({ success: true, message: 'Logged in successfully' });
+// Function to handle the form submission
+function handleLoginFormSubmission(event) {
+    event.preventDefault();
+
+    const enteredUsername = document.getElementById('username').value;
+    const enteredPassword = document.getElementById('password').value;
+
+    console.log("Sending:", { username: enteredUsername, password: enteredPassword });  // Add this line
+
+    // We'll validate the login on the server side for security reasons.
+    fetch("http://localhost:3000/admin-login", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: enteredUsername,
+            password: enteredPassword
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+       if (data.success) {
+    isLoggedIn = true;
+    alert('Successfully logged in.');
+    closeLoginDialog();
+    showArtists();
+    updateLoginButton();
+} else {
+    alert('Login failed. Check your credentials.');
+}
+    })
+    .catch(error => {
+        console.error('Error during login:', error);
+        alert('Login failed due to an error. Please try again.');
+    });
+}
+
+// Finally, bind the showLoginDialog function to your login button
+document.addEventListener("DOMContentLoaded", function() {
+    const loginButton = document.getElementById('loginButton');
+    
+    loginButton.addEventListener('click', function() {
+        if (isLoggedIn) {
+            handleLogout();
+        } else {
+            showLoginDialog();
+        }
+    });
+
+    // Set the initial state
+    updateLoginButton();
 });
 
-export { loginRouter, authorizeAdmin };
+function updateLoginButton() {
+    const loginButton = document.getElementById('loginButton');
+    if (isLoggedIn) {
+        loginButton.textContent = "Logout";
+    } else {
+        loginButton.textContent = "Login";
+    }
+}
+
+function handleLogout() {
+    isLoggedIn = false;
+    alert('Successfully logged out.');
+    updateLoginButton();
+    showArtists(); // Refresh the artists' view to reflect the logged-out state
+}
