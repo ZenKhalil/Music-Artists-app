@@ -1,42 +1,77 @@
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #f2f2f2;
+/* ============ Global Styles ============ */
+
+:root {
+    --primary-color: #2a2a2a;
+    --secondary-color: #555555;
+    --tertiary-color: #e1e1e1;
+    --hover-color: #aaaaaa;
+    --background-color: #f2f2f2;
+    --font-primary: 'Montserrat', sans-serif;
+    --font-secondary: Arial, Helvetica, sans-serif;
 }
 
+body {
+    margin: 0;
+    font-family: var(--font-secondary);
+    background-color: var(--background-color);
+}
+
+h1, h2, p {
+    color: #333;
+    margin: 20px 0;
+}
+
+button {
+    background-color: var(--primary-color);
+    border: none;
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--hover-color);
+}
+
+/* ============ Navigation ============ */
+
 nav {
-  background: linear-gradient(45deg, #2a2a2a, #555555);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 10px 0;
-  text-align: center;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    text-align: center;
 }
 
 nav ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  justify-content: center;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
 nav li {
-  margin: 0 15px;
+    margin: 0 15px;
 }
 
 nav a {
-  font-family: 'Montserrat', sans-serif;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0 10px;
-  color: white;
+    font-family: var(--font-primary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0 10px;
+    color: white;
 }
 
 nav a:hover {
-  font-weight: 400;
-  color: #aaaaaa;
+    font-weight: 400;
+    color: var(--hover-color);
 }
 
+/* ============ Search Bar ============ */
+
 #search-bar {
-  position: absolute;
+    position: absolute;
     width: 40px;
     height: 40px;
     background-color: transparent;
@@ -52,87 +87,34 @@ nav a:hover {
 }
 
 #search-bar:focus {
-    width: 200px; /* adjust width as needed */
+    width: 200px;
     background-color: #ffffff;
     background-image: none;
     padding-left: 10px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--tertiary-color);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 #search-bar::placeholder {
-    color: #aaa;
+    color: var(--tertiary-color);
     font-style: italic;
 }
 
+/* ============ Content Styles ============ */
 
 #content {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 50px;
-  justify-content: center; /* horizontally centers children */
-  align-items: center;     /* vertically centers children */
-}
-
-h1.favorites {
-  font-family: 'Montserrat', sans-serif;
-  width: 100%;
-  text-align: center;
-  margin-top: -2rem;  /* Adjust as needed */
-  font-size: 2.5rem; /* bigger font size */
-    font-weight: bold;
-    letter-spacing: 2px; /* letter spacing */
-    color: #ffffff; /* white color for the text */
-    background: linear-gradient(45deg, #555555, #c26262); /* gradient background */
-    padding: 10px 20px; /* padding around the text */
-    border-radius: 10px; /* rounded corners */
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-h1.genre {
-    font-family: 'Montserrat', sans-serif;
-    width: 100%;
-    text-align: center;
-    margin-top: -3rem;
-    font-size: 2.5rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #ffffff;
-    background: linear-gradient(45deg, #030303, #e4cfcf);
-    padding: 11px 23px;
-    border-radius: 26px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-h1, h2, p {
-  color: #333;
-  margin: 20px 0;
-}
-
-button {
-  background-color: #4a4a4a;
-  border: none;
-  color: #ffffff;
-  padding: 5px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #2a2a2a;
-}
-
-footer {
-  background-color: #2a2a2a;
-  padding: 20px 0;
-  text-align: center;
-  color: white;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .artist-card {
-    border: 1px solid #e1e1e1;
+    border: 1px solid var(--tertiary-color);
     padding: 15px;
     margin: 15px;
     width: 20%;
@@ -150,22 +132,38 @@ footer {
     margin-bottom: 15px;
 }
 
-#content {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+h1.favorites, h1.genre {
+  font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  text-align: center;
+  margin-top: -2rem;  /* Adjust as needed */
+  font-size: 2.5rem; /* bigger font size */
+  font-weight: bold;
+  letter-spacing: 2px; /* letter spacing */
+  color: #ffffff; /* white color for the text */
+  background: linear-gradient(45deg, #555555, #c26262); /* gradient background */
+  padding: 10px 20px; /* padding around the text */
+  border-radius: 10px; /* rounded corners */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Add this to your CSS file */
-
-h1.centered-title {
-    text-align: center;          /* Center the text horizontally */
-    margin-top: 2rem;            /* Spacing from the top */
-    margin-bottom: 2rem;         /* Spacing from the bottom */
-    font-family: 'Montserrat', sans-serif; /* Using the Montserrat font */
+h1.genre {
+    background: linear-gradient(45deg, #030303, #e4cfcf);
+    margin-top: -3rem;
+    border-radius: 26px;
 }
 
-/* Modal Styles */
+/* ============ Footer ============ */
+
+footer {
+    background-color: var(--primary-color);
+    padding: 20px 0;
+    text-align: center;
+    color: white;
+}
+
+/* ============ Modal Styles ============ */
 .modal {
     display: none;
     position: fixed;
@@ -178,18 +176,22 @@ h1.centered-title {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content {
+.genre-modal-content {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 76px !important;
-    position: relative;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
     background-color: #fefefee8;
     margin: 10% auto;
-    padding: 40px;
+    padding: 1px;
     border: 1px solid #888;
     border-radius: 20px;
-    width: 80%;
+    width: 70%;
     box-sizing: border-box;
+    left: 224px;
+    overflow-y: auto;
 }
 
 .close-btn {
@@ -209,20 +211,22 @@ h1.centered-title {
 }
 
 .genre-icon {
+    margin: 17px;
     display: inline-block;
     text-align: center;
     vertical-align: top;
     transition: transform 0.3s ease;
-    flex: 1 0 auto; /* Allows the items to grow and shrink */
-    width: 100%; /* Ensures full width within grid cell */
+    flex: 1 0 auto;
+    width: 100%;
+    padding: 18px;
+    cursor: pointer;
 }
 
 .genre-icon img {
-   width: 100px;
-    height: 100px;
+   max-width: 150px;
+    max-height: 100px;
     border-radius: 5%;
-    margin: 17px;
-    margin-left: 54px;
+    margin: 0 auto;
     display: block;
 }
 
@@ -238,6 +242,83 @@ h1.centered-title {
     border-radius: 20px;
 }
 
+.genre-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.close-btn-create {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#create-artist-content form {
+    display: grid;
+    gap: 20px;
+    width: 80%;
+    margin: auto;
+}
+
+.artist-modal-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    position: relative;
+    background-color: #ffffff;
+    margin: 5% auto;
+    padding: 15px;
+    border: 1px solid #888;
+    border-radius: 20px;
+    width: 50%;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.artist-modal-content input[type="text"],
+.artist-modal-content textarea {
+    width: 100%; /* Full width within the form */
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Montserrat'; /* Same font as the rest of your site */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease; /* Smooth transition effect */
+}
+
+.artist-modal-content button {
+    padding: 10px 20px;
+    background-color: #3b3d3f; /* Using blue as primary color */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.artist-modal-content button:hover {
+    background-color: #0056b3; /* Darkening the button on hover */
+}
+
+#createText {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500; 
+  text-align: center;  /* This will center the text horizontally */
+}
+
+#CreateArtist {
+    width: 88px;
+    height: auto;
+    display: block;
+    margin: 0 auto -36px auto;
+}
+
+/* ============ Media Queries ============ */
+
 @media (max-width: 600px) {
     .genre-icon {
         width: calc(50% - 10px);
@@ -248,9 +329,4 @@ h1.centered-title {
     .genre-icon {
         width: 100%;
     }
-}
-
-.genre-row {
-    display: flex;
-    justify-content: space-between;
 }

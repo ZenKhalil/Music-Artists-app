@@ -16,6 +16,7 @@
         <ul>
             <li><a href="#" id="home-link">Home</a></li>
             <li><a href="#" id="artists-link">Artists</a></li>
+            <li><a href="#" id="create-artist-link">Create Artist</a></li>
             <li><a href="#" id="genre-link">Genre</a></li>
             <li><a href="#" id="favorites-link">Favorites</a></li>
             <li><a href="#" id="about-link">About</a></li>
@@ -28,14 +29,27 @@
         <!-- Indholdet skiftes her afhængigt af navigation -->
     </div>
 
-    <div id="genreModal" class="modal">
-    <div class="modal-content">
+<!-- Genre Modal -->
+<div id="genreModal" class="modal">
+    <div class="modal-content genre-modal-content">
         <span class="close-btn">&times;</span>
         <div id="genre-content">
             <!-- Genre contents will go here -->
         </div>
     </div>
 </div>
+
+<!-- Create Artist Modal -->
+<div id="createArtistModal" class="modal">
+    <div class="modal-content artist-modal-content">
+        <img src="/images/genre-icons/create.png" id="CreateArtist" alt="Create Artist"/>
+        <span class="close-btn-create">&times;</span>
+        <div id="create-artist-content">
+            <!-- Artist creation form will go here -->
+        </div>
+    </div>
+</div>
+
     <footer>
         <p>Udviklet af Mohammed-Zen</p>
     </footer>

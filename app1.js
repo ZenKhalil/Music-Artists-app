@@ -6,8 +6,10 @@
 let artists = [];
 // Lokal gemte favoritkunstnere
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+window.favorites = favorites;
 // Gemmer nuværende genre, hvis valgt
 let currentGenre = null; 
+let currentContext = 'home';  // default value
 
 // ========== Event Listeners ==========
 
@@ -55,6 +57,7 @@ function fetchArtists() {
         .then(response => response.json())
         .then(data => {
             artists = data;
+            window.artists = artists; 
             // Tjek nuværende URL for at vise det korrekte indhold
             const currentPath = window.location.pathname;
             if (currentPath === '/artists') {
@@ -72,10 +75,15 @@ function fetchArtists() {
             // Tilføj event listeners til navigation links
             document.getElementById('home-link').addEventListener('click', showHome);
             document.getElementById('artists-link').addEventListener('click', showArtists);
+            document.getElementById('create-artist-link').addEventListener('click', showCreateArtistForm);
             document.getElementById('favorites-link').addEventListener('click', showFavorites);
             document.getElementById('about-link').addEventListener('click', showAbout);
         });
 }
+
+document.querySelector('.close-btn-create').addEventListener('click', function() {
+    document.getElementById('createArtistModal').style.display = "none";
+});
 
 // Vis hjemmesiden
 function showHome() {
@@ -86,12 +94,13 @@ function showHome() {
 
 // Vis kunstnersiden
 function showArtists() {
+    currentContext = 'artists';
     const contentDiv = document.getElementById('content');
     let artistHTML = '';
     artists.forEach(artist => {
         artistHTML += `
             <div class="artist-card">
-                <img src="images/${artist.image}" alt="${artist.name}">
+                <img src="/images/${artist.image}" alt="${artist.name}">
                 <h3>${artist.name}</h3>
                 <p>${artist.shortDescription}</p>
                 <a href="${artist.website}" target="_blank">Visit Website</a>
@@ -115,10 +124,10 @@ function getUniqueGenres() {
 
 // Vis genrer i modal
 function showGenre(event) {
+    currentContext = 'genre';
     if(event) event.preventDefault();
     const uniqueGenres = getUniqueGenres();
-
-let genreListHTML = '';
+    let genreListHTML = '';
 uniqueGenres.forEach((genre, index) => {
     if (index % 5 === 0) genreListHTML += `<div class="genre-row">`; // Begin a new row every 5 items
 
@@ -154,6 +163,78 @@ function showArtistsByGenre(genre) {
     document.getElementById('genreModal').style.display = "none";
 }
 
+// Vis Lav en ny Artists form
+function showCreateArtistForm(event) {
+    if(event) event.preventDefault();
+    const formHTML = `
+        <h1 id="createText">Create New Artist</h1>
+        <form id="create-artist-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="birthdate">Birthdate:</label>
+            <input type="date" id="birthdate" required>
+            <label for="activeSince">Active Since:</label>
+            <input type="date" id="activeSince" required>
+            <label for="genres">Genres (comma-separated):</label>
+            <input type="text" id="genres" required>
+            <label for="labels">Labels (comma-separated):</label>
+            <input type="text" id="labels" required>
+            <label for="website">Website:</label>
+            <input type="url" id="website" required>
+            <label for="image">Image File Name:</label>
+            <input type="text" id="image" required>
+            <label for="shortDescription">Short Description:</label>
+            <textarea id="shortDescription" required></textarea>
+            <button type="submit">Create Artist</button>
+        </form>
+    `;
+    document.getElementById('create-artist-content').innerHTML = formHTML;
+    document.getElementById('createArtistModal').style.display = "block";
+
+    // Add event listener to handle form submission
+    document.getElementById('create-artist-form').addEventListener('submit', handleCreateArtistFormSubmission);
+}
+
+function handleCreateArtistFormSubmission(event) {
+    event.preventDefault();
+    
+    const newArtist = {
+        name: document.getElementById('name').value,
+        birthdate: document.getElementById('birthdate').value,
+        activeSince: document.getElementById('activeSince').value,
+        genres: document.getElementById('genres').value.split(',').map(s => s.trim()),
+        labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
+        website: document.getElementById('website').value,
+        image: document.getElementById('image').value,
+        shortDescription: document.getElementById('shortDescription').value
+    };
+
+    // POST the new artist data to the server
+    fetch('http://localhost:3000/artists', {
+        method: 'POST',
+        headers: {        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newArtist)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Failed to create a new artist");
+        }
+    })
+    .then(artist => {
+        // Assuming you want to immediately add the newly created artist to the local array and then display them
+        artists.push(artist);
+        showArtists(); // Or any other function you'd like to call to refresh your content after adding a new artist
+        alert('Artist added successfully!');
+    })
+    .catch(error => {
+        console.error("Error adding artist:", error);
+        alert('There was an issue adding the artist. Please try again.');
+    });
+}
+
 // Vis favoritkunstnereside
 function showFavorites() {
     const contentDiv = document.getElementById('content');
@@ -183,15 +264,33 @@ function toggleFavorite(artistId) {
     }
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
+    // Refresh the current view to reflect the change in favorites
+    refreshCurrentView();
+}
+
+function refreshCurrentView() {
     const currentPath = window.location.pathname;
     if (currentPath === '/favorites') {
         showFavorites();
     } else if (currentPath === '/artists' || currentPath === '/') {
         showArtists();
-    } else if (currentPath === '/genre' && currentGenre) {
-        showArtistsByGenre(currentGenre); 
-    } 
+    } else if (currentPath.startsWith('/genre')) {  // Adjusted to check for any genre
+        if (currentGenre) {
+            showArtistsByGenre(currentGenre);
+        }
+    }
 }
+
+// Delegate the click events for artist cards to the content div
+document.getElementById('content').addEventListener('click', function(event) {
+    if (event.target.tagName === 'BUTTON' && event.target.closest('.artist-card')) {
+        const artistId = parseInt(event.target.getAttribute('data-id'), 10);  // Assuming each button will have a data-id attribute with artist's ID
+        if (!isNaN(artistId)) {
+            toggleFavorite(artistId);
+        }
+    }
+});
+
 
 // Vis Om Os side
 function showAbout() {
