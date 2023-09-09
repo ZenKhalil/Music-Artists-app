@@ -76,7 +76,7 @@ nav a:hover {
     height: 40px;
     background-color: transparent;
     border: none;
-    background-image: url('./images/magglas.png');
+    background-image: url('/images/magglas.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
