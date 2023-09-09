@@ -349,7 +349,7 @@ function showEditArtistForm(artistId) {
 
     // Set the image source
     document.getElementById('EditArtistImage').src = `images/${artist.image}`;
-    
+
     const uniqueGenres = getUniqueGenres();
     const genreBobbles = uniqueGenres.map(genre => `
         <input type="checkbox" id="genre-${genre}" name="genres" value="${genre}" ${artist.genres.includes(genre) ? 'checked' : ''}>
@@ -375,15 +375,22 @@ function showEditArtistForm(artistId) {
             <input type="text" id="labels">
             <label for="website">Website:</label>
             <input type="url" id="website">
-            <label for="image">Image File Name:</label>
-            <input type="text" id="image">
+            <label>Image:</label>
+            <div>
+                <input type="radio" id="uploadImage" name="imageSource" value="upload" checked>
+                <label for="uploadImage">Upload</label>
+                <input type="radio" id="imageLink" name="imageSource" value="link">
+                <label for="imageLink">Link</label>
+            </div>
+            <input type="file" id="imageUpload" accept="image/*">
+            <input type="text" id="imageLinkInput" placeholder="Image Link">
             <label for="shortDescription">Short Description:</label>
             <textarea id="shortDescription"></textarea>
             <button type="submit">Save Changes</button>
         </form>
     `;
 
-     document.getElementById('edit-artist-content').innerHTML = formHTML;
+    document.getElementById('edit-artist-content').innerHTML = formHTML;
 
     // Pre-populate the fields
     document.getElementById('name').value = artist.name;
@@ -391,28 +398,67 @@ function showEditArtistForm(artistId) {
     document.getElementById('activeSince').value = artist.activeSince;
     document.getElementById('labels').value = artist.labels.join(', ');
     document.getElementById('website').value = artist.website;
-    document.getElementById('image').value = artist.image;
     document.getElementById('shortDescription').value = artist.shortDescription;
+
+    // Add event listeners for image source options
+    const imageUploadRadio = document.getElementById('uploadImage');
+    const imageLinkRadio = document.getElementById('imageLink');
+    const imageUploadInput = document.getElementById('imageUpload');
+    const imageLinkInput = document.getElementById('imageLinkInput');
+
+    imageUploadRadio.addEventListener('change', () => {
+        if (imageUploadRadio.checked) {
+            imageUploadInput.style.display = 'block';
+            imageLinkInput.style.display = 'none';
+        }
+    });
+
+    imageLinkRadio.addEventListener('change', () => {
+        if (imageLinkRadio.checked) {
+            imageLinkInput.style.display = 'block';
+            imageUploadInput.style.display = 'none';
+        }
+    });
 
     document.getElementById('editArtistModal').style.display = "block";
     document.getElementById('edit-artist-form').addEventListener('submit', handleEditArtistFormSubmission);
 }
+
 
 // Send data videre
 function handleEditArtistFormSubmission(event) {
     event.preventDefault();
     const artistId = event.target.getAttribute('data-artist-id');
     
-    const updatedArtist = {
+ const updatedArtist = {
         name: document.getElementById('name').value,
         birthdate: document.getElementById('birthdate').value,
         activeSince: document.getElementById('activeSince').value,
         genres: Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(checkbox => checkbox.value),
         labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
         website: document.getElementById('website').value,
-        image: document.getElementById('image').value,
+        image: '', // Initialize image as an empty string
         shortDescription: document.getElementById('shortDescription').value
     };
+
+    
+    // Check which image source option is selected
+    const uploadImageRadio = document.getElementById('uploadImage');
+    if (uploadImageRadio.checked) {
+        // Handle image upload
+        // Get the selected file from the input field with ID 'imageUpload'
+        const imageFile = document.getElementById('imageUpload').files[0];
+        // Check if an image file was selected
+        if (imageFile) {
+            // You can upload the image here and set 'updatedArtist.image' accordingly.
+            // For simplicity, I'll just set it to the file name.
+            updatedArtist.image = imageFile.name;
+        }
+    } else {
+        // Handle image link
+        // Get the image link from the input field with ID 'imageLinkInput'
+        updatedArtist.image = document.getElementById('imageLinkInput').value;
+    }
 
     fetch(`http://localhost:3000/artists/${artistId}`, {
         method: 'PUT',
