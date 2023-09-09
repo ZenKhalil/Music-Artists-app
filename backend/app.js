@@ -516,6 +516,12 @@ function toggleFavorite(artistId) {
 // Vis Om Os side
 function showAbout() {
     const contentDiv = document.getElementById('content');
-    contentDiv.innerHTML = "<h1>About Us</h1><p>We are a platform dedicated to showcasing music artists.</p>";
+    contentDiv.innerHTML = `
+        <section id="about">
+            <h1>About GrooveMuze</h1>
+            <p>Welcome to GrooveMuze, where music becomes art, and artists become legends. Our platform is a symphony of creativity, dedicated to celebrating the diverse world of music. Explore, discover, and connect with an array of talented musicians, each a unique note in the grand composition of sound. Curate your own masterpiece by collecting your favorite artists, and immerse yourself in a harmonious journey of music appreciation.</p>
+            <p>Whether you're a passionate music enthusiast or a budding artist, GrooveMuze invites you to join our rhythm and contribute to the ever-evolving melody of music. Unleash your inner maestro and explore the artistic tapestry of music like never before.</p>
+        </section>
+    `;
     history.pushState({ view: 'about' }, '', '/about');
 }
