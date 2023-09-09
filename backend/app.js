@@ -112,9 +112,28 @@ function setupNavigationLinks() {
 // Vis hjemmesiden
 function showHome() {
     const contentDiv = document.getElementById('content');
-    contentDiv.innerHTML = `<h1>Welcome to Artist Directory</h1><p>Explore the world of music artists!</p>`;
+    
+    // Add the necessary HTML structure for the typing effect
+    contentDiv.innerHTML = `
+        <div class="cont">
+            <h1><span class="auto-type"></span></h1>
+        </div>
+    `;
+    
     history.pushState({ view: 'home' }, '', '/home');
+
+    // Initiate the Typed.js instance for the home page
+    var typed = new Typed(".auto-type", {
+        strings: ["WELCOME TO", "GrooveMuze"],
+        typeSpeed: 100,
+        backSpeed: 100,
+        loop: true
+    });
 }
+
+// Using Typed.js library for typing animations
+// GitHub: https://github.com/mattboldt/typed.js
+// Created by Matt Boldt
 
 // Vis kunstnersiden
 function showArtists() {

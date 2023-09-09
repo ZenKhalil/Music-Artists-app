@@ -35,6 +35,22 @@ button:hover {
     background-color: var(--hover-color);
 }
 
+/* ============ Front Page ============ */
+
+.cont {
+    width: 100%;
+    height: 50vh; /* 100% of the viewport height */
+    display: flex;
+    align-items: center;    /* This will vertically center the content */
+    justify-content: center; /* This will horizontally center the content */
+}
+
+.cont h1 {
+    font-size: 80px;
+    font-weight: 600;
+}
+
+
 /* ============ Navigation ============ */
 
 nav {
@@ -192,9 +208,10 @@ h1.favorites, h1.genre {
 }
 
 h1.genre {
-    background: linear-gradient(45deg, #030303, #e4cfcf);
+    background: #d15a49;
     margin-top: -3rem;
     border-radius: 26px;
+    color: black;
 }
 
 /* ============ Footer ============ */
@@ -446,10 +463,11 @@ input[type="checkbox"]:checked + .genre-bobble span {
 
 .nav-logo {
     position: absolute;
-    top: 5px;
-    width: 88px;
+    top: 10px;
+    width: 66px;
     left: 74px;
 }
+
 .nav-right {
     display: flex;
     align-items: center; 
