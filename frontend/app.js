@@ -1,61 +1,54 @@
 "use strict";
 
-// ========== Variabler ==========
+import { fetchArtistsFromAPI, createNewArtist, updateArtist, deleteArtistFromAPI } from "./rest-service.js";
 
-// Liste med alle kunstnere
+"use strict";
+
+// ========== Variables ==========
+
 let artists = [];
-window.toggleFavorite = toggleFavorite; // Gør denne funktion tilgængelig globalt
-
-// Lokal gemte favoritkunstnere
+window.toggleFavorite = toggleFavorite; // Make this function globally available
+window.showArtists = showArtists;
+window.showArtistsByGenre = showArtistsByGenre;
+window.showCreateArtistForm = showCreateArtistForm;
+window.showEditArtistForm = showEditArtistForm;
+window.showArtistPreview = showArtistPreview;
+window.closeArtistPreview = closeArtistPreview;
+window.deleteArtist = deleteArtist;
 let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-// Gemmer nuværende genre, hvis valgt
-let currentGenre = null; 
+let currentGenre = null;
 
 // ========== Event Listeners ==========
 
-// Når dokumentet er loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Hent kunstnerne
     fetchArtists();
-
-    // Tilføj event listener for at lukke modalen
     document.querySelector('.close-btn').addEventListener('click', () => {
         document.getElementById('genreModal').style.display = "none";
     });
 });
 
-// Når browserens tilbage/frem-knapper bruges
 window.addEventListener('popstate', (event) => {
     navigateBasedOnState(event.state);
 });
 
-// Åbn genremodal, når der klikkes på genre-linket
 document.getElementById('genre-link').addEventListener('click', showGenre);
-
-// Luk "Create Artist" modalen
 document.querySelector('.close-btn-create').addEventListener('click', () => {
     document.getElementById('createArtistModal').style.display = "none";
 });
-
-// Åben rediger kunster og luk
 document.querySelector('.close-btn-edit').addEventListener('click', () => {
     document.getElementById('editArtistModal').style.display = "none";
 });
 
+// ========== Functions ==========
 
-// ========== Funktioner ==========
-
-// Hent kunstnere fra API
 function fetchArtists() {
-    fetch('http://localhost:3000/artists')
-        .then(response => response.json())
-        .then(data => {
-            artists = data;
-            navigateBasedOnURL(window.location.pathname);
-            setupNavigationLinks();
-        });
+    fetchArtistsFromAPI().then(data => {
+        artists = data;
+        navigateBasedOnURL(window.location.pathname);
+        setupNavigationLinks();
+    });
 }
+
 
 // Håndter navigation baseret på nuværende URL
 function navigateBasedOnURL(path) {
@@ -259,14 +252,15 @@ function showArtistsByGenre(genre) {
 function showCreateArtistForm(event) {
     if(event) event.preventDefault();
     const uniqueGenres = getUniqueGenres();
- const genreBobbles = uniqueGenres.map(genre => `
-    <input type="checkbox" id="genre-${genre}" name="genres" value="${genre}">
-    <label class="genre-bobble" for="genre-${genre}">
-        <span>${genre}</span>
-        </label>
-        `).join('');
 
-    const formHTML = `
+    const genreBobbles = uniqueGenres.map(genre => `
+        <input type="checkbox" id="genre-${genre}" name="genres" value="${genre}">
+        <label class="genre-bobble" for="genre-${genre}">
+            <span>${genre}</span>
+        </label>
+    `).join('');
+
+    const formHTML =  `
         <h1 id="createText">Create New Artist</h1>
         <form id="create-artist-form">
             <label for="name">Name:</label>
@@ -283,19 +277,44 @@ function showCreateArtistForm(event) {
             <input type="text" id="labels" required>
             <label for="website">Website:</label>
             <input type="url" id="website" required>
-            <label for="image">Image File Name:</label>
-            <input type="text" id="image" required>
+            <label>Image:</label>
+            <div>
+                <input type="radio" id="uploadImage" name="imageSource" value="upload" checked>
+                <label for="uploadImage">Upload</label>
+                <input type="radio" id="imageLink" name="imageSource" value="link">
+                <label for="imageLink">Link</label>
+            </div>
+            <input type="file" id="imageUpload" accept="image/*">
+            <input type="text" id="imageLinkInput" placeholder="Image Link" style="display: none;">
             <label for="shortDescription">Short Description:</label>
             <textarea id="shortDescription" required></textarea>
             <button type="submit">Create Artist</button>
         </form>
     `;
 
-    document.getElementById('create-artist-content').innerHTML = formHTML;
-    document.getElementById('createArtistModal').style.display = "block";
+   document.getElementById('create-artist-content').innerHTML = formHTML;
+   document.getElementById('createArtistModal').style.display = "block";
+   document.getElementById('create-artist-form').addEventListener('submit', handleCreateArtistFormSubmission);
 
-    // Add event listener to handle form submission
-    document.getElementById('create-artist-form').addEventListener('submit', handleCreateArtistFormSubmission);
+   // Add event listeners for image source options just like in edit
+   const imageUploadRadio = document.getElementById('uploadImage');
+   const imageLinkRadio = document.getElementById('imageLink');
+   const imageUploadInput = document.getElementById('imageUpload');
+   const imageLinkInput = document.getElementById('imageLinkInput');
+
+   imageUploadRadio.addEventListener('change', () => {
+       if (imageUploadRadio.checked) {
+           imageUploadInput.style.display = 'block';
+           imageLinkInput.style.display = 'none';
+       }
+   });
+
+   imageLinkRadio.addEventListener('change', () => {
+       if (imageLinkRadio.checked) {
+           imageLinkInput.style.display = 'block';
+           imageUploadInput.style.display = 'none';
+       }
+   });
 }
 
 function handleCreateArtistFormSubmission(event) {
@@ -308,39 +327,36 @@ function handleCreateArtistFormSubmission(event) {
         genres: Array.from(document.querySelectorAll('input[name="genres"]:checked')).map(checkbox => checkbox.value),
         labels: document.getElementById('labels').value.split(',').map(s => s.trim()),
         website: document.getElementById('website').value,
-        image: document.getElementById('image').value,
+        image: '', // Initialize image as an empty string
         shortDescription: document.getElementById('shortDescription').value
     };
 
-    // POST the new artist data to the server
-    fetch('http://localhost:3000/artists', {
-        method: 'POST',
-        headers: {        
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newArtist)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Failed to create a new artist");
+    // Check which image source option is selected
+    const uploadImageRadio = document.getElementById('uploadImage');
+    if (uploadImageRadio.checked) {
+        // Handle image upload
+        const imageFile = document.getElementById('imageUpload').files[0];
+        if (imageFile) {
+            newArtist.image = imageFile.name;
         }
-    })
-    .then(artist => {
-        artists.push(artist);
-        showArtists();
-        
-        // Close the "Create Artist" modal.
-        document.getElementById('createArtistModal').style.display = "none";
-        
-        // Show the success dialog.
-        alert('Artist has been created :)');
-    })
-    .catch(error => {
-        console.error("Error adding artist:", error);
-        alert('There was an issue adding the artist. Please try again.');
-    });
+    } else {
+        // Handle image link
+        newArtist.image = document.getElementById('imageLinkInput').value;
+    }
+    
+    // Function from rest-service.js to create the artist.
+    createNewArtist(newArtist)
+        .then(artist => {
+            artists.push(artist);
+            showArtists();
+
+            document.getElementById('createArtistModal').style.display = "none";
+            alert('Artist has been created :)');
+        })
+        .catch(error => {
+            console.error("Error adding artist:", error);
+            alert('There was an issue adding the artist. Please try again.');
+        });
 }
 
 // Redigere kunstner
@@ -428,9 +444,10 @@ function showEditArtistForm(artistId) {
 // Send data videre
 function handleEditArtistFormSubmission(event) {
     event.preventDefault();
+    
     const artistId = event.target.getAttribute('data-artist-id');
     
- const updatedArtist = {
+    const updatedArtist = {
         name: document.getElementById('name').value,
         birthdate: document.getElementById('birthdate').value,
         activeSince: document.getElementById('activeSince').value,
@@ -441,50 +458,35 @@ function handleEditArtistFormSubmission(event) {
         shortDescription: document.getElementById('shortDescription').value
     };
 
-    
     // Check which image source option is selected
     const uploadImageRadio = document.getElementById('uploadImage');
     if (uploadImageRadio.checked) {
         // Handle image upload
-        // Get the selected file from the input field with ID 'imageUpload'
         const imageFile = document.getElementById('imageUpload').files[0];
-        // Check if an image file was selected
         if (imageFile) {
-            // You can upload the image here and set 'updatedArtist.image' accordingly.
-            // For simplicity, I'll just set it to the file name.
+            // For this example, setting it to the file name, 
+            // but you might want to upload it and then set to a returned URL
             updatedArtist.image = imageFile.name;
         }
     } else {
         // Handle image link
-        // Get the image link from the input field with ID 'imageLinkInput'
         updatedArtist.image = document.getElementById('imageLinkInput').value;
     }
 
-    fetch(`http://localhost:3000/artists/${artistId}`, {
-        method: 'PUT',
-        headers: {        
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedArtist)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Failed to update artist");
-        }
-    })
-    .then(artist => {
-        const artistIndex = artists.findIndex(a => a.id === artistId);
-        artists[artistIndex] = artist;
-        showArtists();
-        document.getElementById('editArtistModal').style.display = "none";
-        alert('Artist has been updated :)');
-    })
-    .catch(error => {
-        console.error("Error updating artist:", error);
-        alert('There was an issue updating the artist. Please try again.');
-    });
+    // Using the function from rest-service.js to update the artist
+    updateArtist(artistId, updatedArtist)
+        .then(artist => {
+            const artistIndex = artists.findIndex(a => a.id === artistId);
+            artists[artistIndex] = artist;
+            showArtists();
+
+            document.getElementById('editArtistModal').style.display = "none";
+            alert('Artist has been updated :)');
+        })
+        .catch(error => {
+            console.error("Error updating artist:", error);
+            alert('There was an issue updating the artist. Please try again.');
+        });
 }
 
 // Vis favoritkunstnereside
@@ -509,30 +511,20 @@ function showFavorites() {
 
 // Slet kunstner
 function deleteArtist(artistId) {
-    // Confirm before deleting
     const confirmDelete = window.confirm("Are you sure you want to delete this artist?");
     if (!confirmDelete) return;
 
-    fetch(`http://localhost:3000/artists/${artistId}`, {
-        method: 'DELETE',
-    })
-    .then(response => {
-        if (response.ok) {
-            // Remove the artist from the artists array
+    // Using the function from rest-service.js to delete the artist
+    deleteArtistFromAPI(artistId)
+        .then(() => {
             artists = artists.filter(artist => artist.id !== artistId);
-            // Update the displayed list of artists
             showArtists();
             alert('Artist has been deleted :)');
-        } else {
-            return response.text().then(error => {
-                throw new Error(error || "Failed to delete artist");
-            });
-        }
-    })
-    .catch(error => {
-        console.error("Error deleting artist:", error);
-        alert('There was an issue deleting the artist. Please try again.');
-    });
+        })
+        .catch(error => {
+            console.error("Error deleting artist:", error);
+            alert('There was an issue deleting the artist. Please try again.');
+        });
 }
 
 // Skift kunstnerstatus til favorit
