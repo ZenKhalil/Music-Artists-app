@@ -63,7 +63,7 @@ Ready to embark on your musical journey? Let's get started with GrooveMuze:
 
 5. GrooveMuze is now ready to rock on http://localhost:3000. Open your browser and let the music flow!
 
-   *SIDE NOTE YOU CANT REFRESH THE PAGE, IF YOU GET CANNOT GET /(SOMETHING) YOU HAVE TO GO TO THE MAIN ADDRESS AGAIN  e.g. http://127.0.0.1:5500*
+   *SIDE NOTE YOU CANT REFRESH THE PAGE, IF YOU SEE "CANNOT GET /(SOMETHING)" YOU HAVE TO GO TO THE MAIN ADDRESS AGAIN  e.g. http://127.0.0.1:5500*
 
 ## Usage
 
